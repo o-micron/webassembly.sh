@@ -47,18 +47,10 @@ export default class App extends Component {
     }
   }
 
-  async fetchCommand (options) {
-    let commandName = options.args[0];
-    if (window.gtag) {
-      window.gtag('event', 'run command', {
-        // 'event_category': '',
-        'event_label': commandName,
-        // 'value': '<here the command args and environment>'
-      });
-    }
+  async fetchCommand(options) {
     return await this.wapm.runCommand(options);
   };
-  
+
   componentDidMount() {
     const asyncTask = async () => {
       let params = this._handleQueryParams();
@@ -68,10 +60,11 @@ export default class App extends Component {
         // console.log(params.runCommand);
         setTimeout(
           () => this.wasmTerminal.runCommand(params.runCommand),
-        50);
+          50);
       }
     };
     asyncTask();
+    window.bindWasmFn(this);
   }
 
   componentWillUnmount() {
