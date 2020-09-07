@@ -47,21 +47,29 @@ export default class App extends Component {
     }
   }
 
-  async fetchCommand(options) {
-    return await this.wapm.runCommand(options);
+  async fetchCommand(options, that = this) {
+    // let commandName = options.args[0];
+    // if (window.gtag) {
+    //   window.gtag('event', 'run command', {
+    //     // 'event_category': '',
+    //     'event_label': commandName,
+    //     // 'value': '<here the command args and environment>'
+    //   });
+    // }
+    return await that.wapm.runCommand(options);
   };
 
   componentDidMount() {
     const asyncTask = async () => {
       let params = this._handleQueryParams();
       await this._setupWasmTerminal(params.inline);
-      this._setupDropZone();
-      if (params.runCommand) {
-        // console.log(params.runCommand);
-        setTimeout(
-          () => this.wasmTerminal.runCommand(params.runCommand),
-          50);
-      }
+      // this._setupDropZone();
+      // if (params.runCommand) {
+      //   // console.log(params.runCommand);
+      //   setTimeout(
+      //     () => this.wasmTerminal.runCommand(params.runCommand),
+      //   50);
+      // }
     };
     asyncTask();
     window.bindWasmFn(this);
@@ -85,10 +93,23 @@ export default class App extends Component {
 
   render() {
     return (
-      <div class="fullscreen">
-        <main id="wasm-terminal"></main>
-        <div id="drop-zone">
-          <h1>Please drop a `.wasm` module or any other asset.</h1>
+      <div id="main-app" style="height: 100%; background-color: white;">
+        <div class="row" style="height: 100%;">
+          <div class="row" style="height: 100%;">
+            <div class="col-5 shadow-lg p-3 mb-5 bg-white rounded">
+              <div class="col-5 shadow-lg p-3 mb-5 bg-white rounded">
+                <div id="editor">
+                  <div id="editor"></div>
+                </div>
+              </div>
+            </div>
+            <div id="canvas-parent" class="col-7 mb-5 bg-transparent rounded">
+              <div id="canvas-parent" class="col-7 mb-5 bg-transprent rounded">
+                <main id="wasm-terminal"></main>
+                <main id="wasm-terminal"></main>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -98,7 +119,7 @@ export default class App extends Component {
     // Let's bind our wasm terminal to it's container
     const containerElement = document.querySelector("#wasm-terminal");
     if (!isInline) {
-      this.wasmTerminal.print(getWelcomeMessage());
+      // this.wasmTerminal.print(getWelcomeMessage());
     }
     this.wasmTerminal.open(containerElement);
 
@@ -110,23 +131,23 @@ export default class App extends Component {
     // Xterm has this weird bug where it won' fit correctly
     // Thus, create a watcher to force it to fit
     // And stop watching once we fit to 90% height
-    const fitXtermOnLoadWatcher = () => {
-      const xtermScreen = document.querySelector(".xterm-screen");
-      const body = document.body;
-      if (xtermScreen) {
-        const xtermScreenHeight = xtermScreen.offsetHeight;
-        const bodyHeight = body.offsetHeight;
-        this.wasmTerminal.fit();
-        this.wasmTerminal.focus();
-        if (xtermScreenHeight / bodyHeight > 0.9) {
-          resolveOpenPromise();
-          return;
-        }
-      }
+    // const fitXtermOnLoadWatcher = () => {
+    //   const xtermScreen = document.querySelector(".xterm-screen");
+    //   const body = document.body;
+    //   if (xtermScreen) {
+    //     const xtermScreenHeight = xtermScreen.offsetHeight;
+    //     const bodyHeight = body.offsetHeight;
+    //     this.wasmTerminal.fit();
+    //     this.wasmTerminal.focus();
+    //     if (xtermScreenHeight / bodyHeight > 0.9) {
+    //       resolveOpenPromise();
+    //       return;
+    //     }
+    //   }
 
-      setTimeout(() => fitXtermOnLoadWatcher(), 50);
-    };
-    fitXtermOnLoadWatcher();
+    //   setTimeout(() => fitXtermOnLoadWatcher(), 50);
+    // };
+    // fitXtermOnLoadWatcher();
 
     return openedPromise;
   }
